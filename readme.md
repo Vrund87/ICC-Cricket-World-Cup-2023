@@ -20,3 +20,5 @@ To predict the playing 11 what we have done is we predicted the runs and wickets
 ## Task 3 :- Predict the Winner of ICC Cricket World Cup 2023
 
 From task 2 we have the finalists and to predict the winner we complete the match using the similar process used before to get the winner of the finals. 
+
+## Contributors : Vrund Rajput (202001075), Hetav Vakani (202001447), Om Patel (202001462)
