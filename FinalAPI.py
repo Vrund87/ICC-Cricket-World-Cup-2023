@@ -361,29 +361,17 @@ def update_table(winner, loser, winner_runs, winner_overs, loser_runs, loser_ove
     points_df.loc[loser_index, 'Matches'] += 1
     points_df.loc[loser_index, 'Lost'] += 1
 
-    # split_winner_for = points_df.loc[winner_index, 'For']
-    # for_runs = int(float(split_winner_for.split('/')[0]))
-    # for_overs = float(split_winner_for.split('/')[1])
     for_runs = points_df.loc[winner_index, 'For_Runs']
     for_overs = points_df.loc[winner_index, 'For_Overs']
 
     for_runs += winner_runs
     for_overs += winner_overs
 
-    # split_winner_against = points_df.loc[winner_index, 'Against']
-    # print(split_winner_against.split('/'))
-    # against_runs = int(float(split_winner_against.split('/')[0]))
-    # against_overs = float(split_winner_against.split('/')[1])
     against_runs = points_df.loc[winner_index, 'Against_Runs']
     against_overs = points_df.loc[winner_index, 'Against_Overs']
 
     against_runs += loser_runs
     against_overs += loser_overs
-
-    # points_df.loc[winner_index, 'For'] = str(for_runs) + '/' + str(for_overs)
-    # points_df.loc[winner_index, 'Against'] = str(against_runs) + '/' + str(against_overs)    
-
-    # points_df.loc[winner_index, 'Net Run Rate'] = str((for_runs/for_overs) - (against_runs/against_overs))
 
     print(winner_runs, winner_overs, loser_runs, loser_overs)
     print(for_runs, for_overs, against_runs, against_overs)
@@ -395,33 +383,17 @@ def update_table(winner, loser, winner_runs, winner_overs, loser_runs, loser_ove
     points_df.loc[winner_index, 'Against_Overs'] = against_overs
     points_df.loc[winner_index, 'Net Run Rate'] = (for_runs/for_overs) - (against_runs/against_overs)
 
-    # Update the loser's points
-    # split_loser_for = points_df.loc[loser_index, 'For']
-    # print(split_loser_for.split('/'))
-    # for_runs = int(float(split_winner_for.split('/')[0]))
-    # for_overs = float(split_winner_for.split('/')[1])
-
     for_runs = points_df.loc[loser_index, 'For_Runs']
     for_overs = points_df.loc[loser_index, 'For_Overs']
 
     for_runs += loser_runs
     for_overs += loser_overs
 
-    # split_loser_against = points_df.loc[winner_index, 'Against']
-    # print(split_loser_against)
-    # against_runs = int(float(split_loser_for.split('/')[0]))
-    # against_overs = float(split_loser_against.split('/')[1])
-
     against_runs = points_df.loc[loser_index, 'Against_Runs']
     against_overs = points_df.loc[loser_index, 'Against_Overs']
 
     against_runs += winner_runs
     against_overs += winner_overs
-
-    # points_df.loc[winner_index, 'For'] = str(for_runs) + '/' + str(for_overs)
-    # points_df.loc[winner_index, 'Against'] = str(against_runs) + '/' + str(against_overs)    
-
-    # points_df.loc[loser_index, 'Net Run Rate'] = (for_runs/for_overs) - (against_runs/against_overs)
 
     points_df.loc[loser_index, 'For_Runs'] = for_runs
     points_df.loc[loser_index, 'For_Overs'] = for_overs
@@ -432,10 +404,6 @@ def update_table(winner, loser, winner_runs, winner_overs, loser_runs, loser_ove
 
 
 def complete_match(team1, team2, venue):
-    # load upcomming_matches.csv
-    # upcoming_matches = pd.read_csv('../csvs/upcoming_matches.csv')
-
-    # for team1, team2, venue in zip(upcoming_matches['team1'], upcoming_matches['team2'], upcoming_matches['venue']):
         num = np.random.uniform(0, 1)
         team1 = team_mapping(team1)
         team2 = team_mapping(team2)
@@ -444,8 +412,7 @@ def complete_match(team1, team2, venue):
         if num < 0.5:
             toss_winner = team1
             toss_losser = team2
-        
-        # make a dataframe team1, team2, venue, toss_winner
+
         toss_df = pd.DataFrame([[team1, team2, venue, toss_winner]], columns=['team1', 'team2', 'venue', 'toss_winner'])
         # predict the toss_winners_decision
         toss_winners_decision = toss_model.predict(toss_df)
@@ -458,11 +425,9 @@ def complete_match(team1, team2, venue):
             batting_team = toss_losser
             bowling_team = toss_winner
 
-        # make a dataframe venue, batting_team, bowling_team, 50
         inning1_df = pd.DataFrame([[venue, batting_team, bowling_team, 50]], columns=['venue', 'batting_team', 'bowling_team', 'total_overs_played'])
         inning1_score = inning1_model.predict(inning1_df.astype('float32'))
 
-        # make a dataframe innings, venue, batting_team, bowling_team, total_runs_per_innings_match
         inning1_df = pd.DataFrame([[1, venue, batting_team, bowling_team, inning1_score]], columns=['innings', 'venue', 'batting_team', 'bowling_team', 'total_runs_per_innings_match'])
         inning1_over = over_model.predict(inning1_df.astype('float32'))
 
@@ -470,11 +435,9 @@ def complete_match(team1, team2, venue):
             inning1_score = inning1_score*50/inning1_over
             inning1_over = 50
         
-        # make a dataframe venue, batting_team, bowling_team, total_overs_played, total_runs_in_innings1
         inning2_df = pd.DataFrame([[venue, bowling_team, batting_team, 50, inning1_score]], columns=['venue', 'batting_team', 'bowling_team', 'total_overs_played', 'total_runs_in_innings1'])
         inning2_score = inning2_model.predict(inning2_df.astype('float32'))
 
-        # make a dataframe innings, venue, batting_team, bowling_team, total_runs_per_innings_match
         inning2_df = pd.DataFrame([[2, venue, bowling_team, batting_team, inning2_score]], columns=['innings', 'venue', 'batting_team', 'bowling_team', 'total_runs_per_innings_match'])
         inning2_over = over_model.predict(inning2_df.astype('float32'))
 
@@ -490,13 +453,11 @@ def predict_semifinalists():
 
     points_df = pd.read_csv('./csvs/points_table.csv')
 
-    # for 'For' column split the string by '/' and convert the first element to int and second element to float and make two column call it 'For_Runs' and 'For_Overs' and delete the 'For' column
     points_df[['For_Runs', 'For_Overs']] = points_df['For'].str.split('/', expand=True)
     points_df['For_Runs'] = points_df['For_Runs'].astype(int)
     points_df['For_Overs'] = points_df['For_Overs'].astype(float)
     points_df.drop(['For'], axis=1, inplace=True)
 
-    # for 'Against' column split the string by '/' and convert the first element to int and second element to float and make two column call it 'Against_Runs' and 'Against_Overs' and delete the 'Against' column
     points_df[['Against_Runs', 'Against_Overs']] = points_df['Against'].str.split('/', expand=True)
     points_df['Against_Runs'] = points_df['Against_Runs'].astype(int)
     points_df['Against_Overs'] = points_df['Against_Overs'].astype(float)
@@ -512,11 +473,9 @@ def predict_semifinalists():
             points_df = update_table(winner, reverse_team_mapping(batting_team), inning2_score, inning2_over, inning1_score, inning1_over, points_df)
     
     points_df = points_df.sort_values(by=['Points', 'Net Run Rate'], ascending=False)
-    # pd.DataFrame.to_csv(points_df, '../csvs/updatedTable.csv', index=False)
 
     # # create a csv file with top 4 teams
     points_df.head(4).to_csv('./csvs/semifinalists.csv', index=False)
-
 
     return points_df.iloc[:4]['Team'].values.tolist()
 
@@ -663,7 +622,6 @@ def top_batsman():
     for index, player_row in player_df.iterrows():
         for index, match_row in upcoming_matches.iterrows():
             if player_row['Team'] == match_row['team1'] or player_row['Team'] == match_row['team2']:
-                #in predict_df add 'player_name','team','opponent_team','venue','total_runs','highest_score','batting_avg','strike_rate','bowling_runs','total_wickets','bowling_avg','economy'
                 opponent_team = match_row['team1'] if player_row['Team'] == match_row['team2'] else match_row['team2']
                 predict_df = predict_df._append({'player_name': player_row['player_name'], 'Team': player_row['Team'], 'opponent_team':opponent_team, 'venue': match_row['venue'], 'total_runs': player_row['total_runs'], 'highest_score': player_row['highest_score'], 'batting_avg': player_row['batting_avg'], 'strike_rate': player_row['strike_rate'], 'bowling_runs': player_row['bowling_runs'], 'total_wickets': player_row['total_wickets'], 'bowling_avg': player_row['bowling_avg'], 'economy': player_row['economy']}, ignore_index=True)
 
@@ -699,12 +657,9 @@ def top_bowler():
     top_wicket_scorer = player_df.groupby(['player_name'])['match_wickets'].sum().reset_index()
     top_wicket_scorer = top_wicket_scorer.sort_values(by='match_wickets', ascending=False)
     top_wicket_scorer = top_wicket_scorer.head(15)
-    # print(top_run_scorer)
     player_df.drop(['total_wickets','match_wickets'], axis=1, inplace=True)
     player_df = player_df[player_df['player_name'].isin(top_wicket_scorer['player_name'])]
-    # print(player_df)
     player_df.drop_duplicates(subset=['player_name'], keep='first', inplace=True)
-    # print(top_run_scorer.columns)
     player_df = player_df.merge(top_wicket_scorer, on='player_name', how='left')
 
     player_df.rename(columns={'match_wickets': 'total_wickets'}, inplace=True)
@@ -744,16 +699,13 @@ def top_bowler():
     final_df.drop_duplicates(subset=['player_name'], keep='first', inplace=True)
     final_df['total_wickets'] = final_df['total_wickets'] + final_df['predicted_wickets']
     final_df.drop(['predicted_wickets','wickets','Team','opponent_team','venue','highest_score','batting_avg','strike_rate','bowling_runs','bowling_avg','economy','total_runs'], axis=1, inplace=True)
-    # print(final_df)
     final_df['answer'] = final_df['player_name'] + ' - ' + final_df['total_wickets'].astype(str)
     return final_df['answer']
 
 @app.get("/predict-winner")
 def predict_winner_api_function():
     winner = predict_winner()
-    # convert winner into array winner['team']
     print(winner)
-    
     return {"winner": winner}
 
 @app.get("/predict-semifinalists")
