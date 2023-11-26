@@ -726,12 +726,12 @@ def predict_eleven_api_function():
 @app.get("/predict-batsman")
 def predict_batsman_api_function():
     answer = top_batsman().tolist()
-    return {"top_batsman": answer}
+    return {"Top Scorers": answer}
 
 @app.get("/predict-bowler")
 def predict_batsman_api_function():
     answer = top_bowler().tolist()
-    return {"top_bowler": answer}
+    return {"Top Wicket Tackers": answer}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=5000)
